@@ -1,4 +1,3 @@
-from os import remove
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -10,26 +9,19 @@ options.add_experimental_option('excludeSwitches', ['enable-logging'])
 driver = webdriver.Chrome(service=ChromeService(
     executable_path=ChromeDriverManager().install()),options=options)
 
-
 driver.get("https://www.dcard.tw/f/relationship")
-time.sleep(2)
+
+
 
 titles = set()
 
-
 def get_dcard_titles():
-    h2_tags = driver.find_elements(By.TAG_NAME, "h2")
-
-    a_tags = []
-
-    for h2 in h2_tags:
-        data = h2.find_elements(By.TAG_NAME, "a")
-        a_tags.append(data)
-
-    for a in a_tags:
-        for i in a:
-            data = i.find_element(By.TAG_NAME, 'span')
-            titles.add(data.text)
+    for i in range(50):
+        try:
+            a = driver.find_element(By.XPATH, f'//*[@id="__next"]/div[2]/div[2]/div/div/div/div[2]/div[2]/div/div/div[1]/div[{i}]/article/h2/a')
+            titles.add(a.text)
+        except:
+            pass
 
 
 def scroll_page():
@@ -50,11 +42,13 @@ def remove_bottom_login_or_register():
     """)
 
 
-remove_bottom_login_or_register()
-scroll_page()
+for i in range(500):
+    get_dcard_titles()
+    driver.execute_script(f"window.scrollTo(0, {int(i*1080)});")
 
-with open('dcardTitles.txt', 'a', encoding='UTF-8') as f:
-    for i in titles:
-        f.write(i+"\n")
+for title in titles:
+    with open('dcardTitles.txt','a', encoding='UTF-8') as f:
+        f.write(f'{title}\n')
+
 
 driver.quit()

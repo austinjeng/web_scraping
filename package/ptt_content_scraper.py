@@ -15,7 +15,7 @@ def get_body_text():
     # with open('pttbody.txt', 'w') as f:
     #     f.write(main_content.text)
     index = main_content.text.index('發信站')
-    with open('pttbody.txt', 'a') as f:
+    with open('pttbody.txt', 'a', encoding='UTF-8') as f:
         f.write(main_content.text[:index - 2])
     driver.quit()
 

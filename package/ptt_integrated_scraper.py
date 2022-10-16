@@ -30,18 +30,18 @@ def get_body_text():
     # with open('pttbody.txt', 'w') as f:
     #     f.write(main_content.text)
     index = main_content.text.index('發信站')
-    with open('pttbody.txt', 'a') as f:
+    with open('pttbody.txt', 'a', encoding='UTF-8') as f:
         f.write(main_content.text[:index - 2])
 
 
 def start():
     driver.get('https://www.ptt.cc/bbs/Stock/index.html')
 
-    for i in range(20):
+    for i in range(50):
         title_list = get_current_page_titles()
 
         for title in title_list[:]:
-            if '閒聊' in title.text or '公告' in title.text or '刪除' in title.text or title.text == '-':
+            if '閒聊' in title.text or '公告' in title.text or '刪除' in title.text or title.text.strip() == '':
                 title_list.remove(title)
 
         for title in title_list:
