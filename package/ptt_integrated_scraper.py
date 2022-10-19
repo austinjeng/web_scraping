@@ -21,6 +21,7 @@ def last_page():
         prev_btn = driver.find_element(By.LINK_TEXT, "‹ 上頁")
         prev_btn.click()
     except:
+        prev_btn = driver.find_element(By.LINK_TEXT, "‹ 上頁")
         prev_btn.click()
 
 
@@ -37,6 +38,7 @@ def get_body_text():
 def start():
     driver.get('https://www.ptt.cc/bbs/Stock/index.html')
 
+    # i is the total page you want to scrape
     for i in range(50):
         title_list = get_current_page_titles()
 
