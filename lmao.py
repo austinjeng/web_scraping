@@ -8,7 +8,6 @@ options = uc.ChromeOptions()
 
 unvisited = []
 
-
 def somethong(number: int):
     try:
         driver.get(
@@ -17,18 +16,22 @@ def somethong(number: int):
 
         body_text = body_text.replace(' ', '')
         body_text = body_text.replace('\n', '')
-        with open('body.txt', 'w', encoding='UTF-8') as f:
-            f.write(body_text)
 
-        # <h1 class="sc-ae7e8d73-0 jQMxOW">Re: 以前發生過的詐騙手法又復燃了</h1>
         title_text = re.findall('<h1.*>(.*)</h1>', body_text)[0]
+        category = re.findall('</h1>.*?<a.*?>(.*?)</a>', body_text)[0]
         print(title_text)
 
-        article = re.findall('<article.*</article>', body_text)[0]
-        paragraph = re.findall('<span>(.*?)</span>', article)[0]
-        with open('dcardText.txt', 'a', encoding='UTF-8') as f:
-            f.write(
-                f"---{title_text}---\n{paragraph}\n\n\n----------------------------------------------------------------------\n")
+        article = re.findall('<article.*</article>', body_text)
+        
+        #if article is deleted or no text is found in content, don't write to file
+        if not article or title_text == '文章已被刪除':
+            pass
+        else:    
+            #if some text exist in article list, extract the parargraph from the list
+            paragraph = re.findall('<span>(.*?)</span>', article[0])[0]
+            with open('dcardText.txt', 'a', encoding='UTF-8') as f:
+                f.write(
+                    f"---{title_text}---   {category}版   文章編號:{number}\n{paragraph}\n\n\n----------------------------------------------------------------------\n")
     except:
         unvisited.append(number)
         pass
@@ -38,6 +41,8 @@ def somethong(number: int):
 
 if __name__ == '__main__':
     driver = uc.Chrome(options=options)
-    for i in range(240284377, 240284000, -1):
+    for i in range(240298341, 240298300, -1):
         somethong(i)
+        
+    print(f'Unvisited articles are\n{str(unvisited)}')
     driver.quit()
